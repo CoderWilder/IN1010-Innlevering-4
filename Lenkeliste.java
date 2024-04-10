@@ -34,7 +34,7 @@ abstract public class Lenkeliste<E> implements Liste<E> {
         @Override
         public boolean hasNext() { // Returnerer true dersom iterasjonen har flere element
 
-            return start != null;
+            return temp != null;
         }
     
         @Override
@@ -105,13 +105,13 @@ abstract public class Lenkeliste<E> implements Liste<E> {
 
     @Override // Overksriver Object toString metode
     public String toString() { // Skriver ut data og indeks om hver node i listen 
-        String svar = "Lenkelisten har nå " + stoerrelse() + " elementer med følgende indeks og tilhørende data: \n";
+        String svar = "****Lenkelisten har " + stoerrelse() + " elementer med følgende Indeks og tilhørende Objektdata****\n";
 
         Node temp = start;
 
         for (int i = 0; i < stoerrelse(); i++) {
             E info = temp.data;
-            svar += "Indeks: " + i +", " + "Data: " + info + "\n";
+            svar += "Indeks: " + i + "\nObjektdata: \n\n" + info + "\n";
 
             temp = temp.neste;
         }

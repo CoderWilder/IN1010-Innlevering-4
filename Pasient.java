@@ -16,5 +16,8 @@ public class Pasient {
         nyId++; // Øker nyID med en for hver instans av klassen
     }
 
-    // Implementering av metoder..
+    @Override
+    public String toString() { // Overskriver her toString metoden
+        return "Navn: " + navn + "\nFødselsnummer: " + fødselsnummer + "\nPasient Id: " + Id + "\n"; 
+    }
 }

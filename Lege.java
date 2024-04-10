@@ -15,12 +15,11 @@ public class Lege implements Comparable<Lege> {
 
     @Override
     public String toString() { // Overskriver her toString metoden
-        return "Lege har følgende infomasjon:\n" + "Navn: " + navn;
+        return "Navn: " + navn;
     }
 
     @Override
     public int compareTo(Lege annenLege) {
-
         return navn.compareTo(annenLege.navn); // Benytter Java sin innebygde compareTo() metode for Strings
     }
 
@@ -33,14 +32,44 @@ public class Lege implements Comparable<Lege> {
         }
     }
 
-    public Resept skrivResept(Legemiddel legemiddel, Pasient pasient, int reit) throws UlovligUtskrift {
-        if (legemiddel.getClass() == Narkotisk.class ) { // Sjekker om legemiddelet er av Typen Narkotisk
+    public Resept skrivHvitResept(Legemiddel legemiddel, Pasient pasient, int reit) throws UlovligUtskrift { // Metode for opprettelse av HvitResept
+        if (legemiddel instanceof Narkotisk) { // Sjekker om legemiddelet er av Typen Narkotisk
+            throw new UlovligUtskrift(this, legemiddel); 
+        }
+
+        HvitResept nyResept = new HvitResept(legemiddel, this, pasient, reit);
+        utskrevneResepter.leggTil((utskrevneResepter.stoerrelse), nyResept); 
+        return nyResept;
+    }
+
+    public MilResept skrivMilResept(Legemiddel legemiddel, Pasient pasient, int reit) throws UlovligUtskrift { // Metode for opprettelse av MilResept
+        if (legemiddel instanceof Narkotisk) { // Sjekker om legemiddelet er av Typen Narkotisk
+            throw new UlovligUtskrift(this, legemiddel); 
+        }
+
+        MilResept nyResept = new MilResept(legemiddel, this, pasient);
+        utskrevneResepter.leggTil((utskrevneResepter.stoerrelse), nyResept); 
+        return nyResept;
+    }
+
+    public PResept skrivPResept(Legemiddel legemiddel, Pasient pasient, int reit) throws UlovligUtskrift { // Metode for opprettelse av PResept
+        if (legemiddel instanceof Narkotisk) { // Sjekker om legemiddelet er av Typen Narkotisk
+            throw new UlovligUtskrift(this, legemiddel); 
+        }
+
+        PResept nyResept = new PResept(legemiddel, this, pasient, reit);
+        utskrevneResepter.leggTil((utskrevneResepter.stoerrelse), nyResept); 
+        return nyResept;
+    }
+
+    public BlaaResept skrivBlaaResept(Legemiddel legemiddel, Pasient pasient, int reit) throws UlovligUtskrift { // Metode for opprettelse av PResept
+        if (legemiddel instanceof Narkotisk) { // Sjekker om legemiddelet er av Typen Narkotisk
             if (this.getClass() == Lege.class) { // Sjekker her om Lege er instans av Lege eller subklassen Spesialist 
                 throw new UlovligUtskrift(this, legemiddel); 
             }
         }
 
-        HvitResept nyResept = new HvitResept(legemiddel, this, pasient, reit);
+        BlaaResept nyResept = new BlaaResept(legemiddel, this, pasient, reit); // Metode for opprettelse av Blaa Resept
         utskrevneResepter.leggTil((utskrevneResepter.stoerrelse), nyResept); 
         return nyResept;
     }

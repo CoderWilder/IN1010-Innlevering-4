@@ -52,7 +52,7 @@ public abstract class Resept {
 
     @Override
     public String toString() { // Overskriver her toString metoden
-        return "Id: " + Id + "\n" + "Legemiddel: " + legemiddel.navn + "\n" + "Utskrivende lege: " + utskrivendeLege + "\n" + "PasientId: " + pasientId + "\n" + "Reit: " + reit;
+        return "Resept Id: " + Id + "\n" + "Legemiddel: " + legemiddel.navn + "\n" + "Utskrivende lege " + utskrivendeLege + "\n" + "Pasient " + pasient + "Reit: " + reit;
     }
 }
 

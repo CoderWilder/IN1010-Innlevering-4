@@ -17,7 +17,7 @@ public class Legemiddel {
 
     @Override
     public String toString() { // Overskriver her toString metoden
-        return "Navn: " + navn + "\n" + "Pris: " + pris + "\n" + "Virkestoff: " + virkestoff + "\n" + "ID: " + ID;
+        return "Navn: " + navn + "\n" + "Pris: " + pris + "\n" + "Virkestoff: " + virkestoff + "\n" + "Legemiddel Id: " + Id + "\n";
     }
 
     public int hentPris() {
