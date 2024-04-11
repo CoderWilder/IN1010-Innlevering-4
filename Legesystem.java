@@ -2,6 +2,7 @@
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 import java.io.File;
 
@@ -161,6 +162,16 @@ public class Legesystem {
         return null; 
     }
 
+    public Legemiddel finnLegemiddel(String legemiddelNavn) {
+        for (Legemiddel legemiddel : legemiddelListe) {
+            if(legemiddel.hentNavn().equals(legemiddelNavn)) {
+                return legemiddel;
+            }
+        }
+
+        return null;
+    }
+
     public void skrivUt() {
         System.out.println("\n---Skriver ut registrerte Pasienter---");
         System.out.println(pasientListe);
@@ -184,6 +195,69 @@ public class Legesystem {
         System.out.println("\n---Skriver ut registrerte Resepter for hver Lege---");
         for (Lege lege : legeListe) {
             System.out.println(lege.utskrevneResepter); 
+        }
+    }
+
+    public void leggTilLege(String legeNavn, int kontrollId) {
+        
+        if (kontrollId == 0) {
+            legeListe.leggTil(legeListe.stoerrelse(), new Lege(legeNavn));
+        } else {
+            legeListe.leggTil(legeListe.stoerrelse(), new Spesialist(legeNavn, Integer.toString(kontrollId)));
+        }
+
+        System.out.print("Lagt til Legen " + legeNavn + " i legeliste"); 
+    }
+
+    public void leggTilPasient(String pasientNavn, String fødselsnummer) {
+        pasientListe.leggTil(pasientListe.stoerrelse(), new Pasient(pasientNavn, fødselsnummer));
+    }
+
+    public void leggTilLegemiddel(String type, String navn, int pris, int virkestoff, int styrke) {
+        String typeL = type.toLowerCase();
+        List<String> gyldigLegemiddelType = List.of("narkotisk", "vanlig", "vanedannende"); 
+
+        if (gyldigLegemiddelType.contains(typeL)) {
+            switch (typeL) {
+                case "narkotisk":
+                    legemiddelListe.leggTil(legemiddelListe.stoerrelse(), new Narkotisk(styrke, navn, pris, virkestoff));
+                    break;
+                case "vanilg": 
+                    legemiddelListe.leggTil(legemiddelListe.stoerrelse(), new Vanlig(navn, pris, virkestoff));
+                    break;
+                case "vanedannende": 
+                    legemiddelListe.leggTil(legemiddelListe.stoerrelse(), new Vanedannende(styrke, navn, pris, virkestoff));
+                    break;
+            }
+        }
+    }
+
+    public void leggTilResept(String type, String legeNavn, String legemiddelNavn, int pasientID, int reit) throws UlovligUtskrift {
+        String typeL = type.toLowerCase();
+        List<String> gyldigReseptType = List.of("hvit", "blaa", "militaer", "p"); 
+
+        Lege lege = finnLegeMedNavn(legeNavn); 
+        Legemiddel legemiddel = finnLegemiddel(legemiddelNavn);
+        Pasient pasient = finnPasientMedId(pasientID); 
+
+        if (lege != null && gyldigReseptType.contains(typeL) && legemiddel != null && pasient != null) {
+            switch (typeL) {
+                case "hvit":
+                    lege.skrivHvitResept(legemiddel, pasient, reit); 
+                    break;
+                case "blaa": 
+                    lege.skrivBlaaResept(legemiddel, pasient, reit); 
+                    break; 
+                case "militaer":
+                    lege.skrivMilResept(legemiddel, pasient, reit); 
+                    break; 
+                case "p":
+                    lege.skrivPResept(legemiddel, pasient, reit); 
+                    break;
+            }
+
+        } else {
+               throw new UlovligUtskrift(lege, legemiddel); 
         }
     }
 }

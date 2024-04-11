@@ -15,7 +15,7 @@ public class Lege implements Comparable<Lege> {
 
     @Override
     public String toString() { // Overskriver her toString metoden
-        return "Navn: " + navn;
+        return "Navn: " + navn + "\n";
     }
 
     @Override

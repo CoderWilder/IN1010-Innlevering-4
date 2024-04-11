@@ -111,7 +111,7 @@ abstract public class Lenkeliste<E> implements Liste<E> {
 
         for (int i = 0; i < stoerrelse(); i++) {
             E info = temp.data;
-            svar += "Indeks: " + i + "\nObjektdata: \n\n" + info + "\n";
+            svar += "\nIndeks: " + i + "\nObjektdata: \n\n" + info + "\n";
 
             temp = temp.neste;
         }
