@@ -5,12 +5,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 
 public class Legesystem {
 
     public IndeksertListe<Pasient> pasientListe = new IndeksertListe<>(); 
     public IndeksertListe<Legemiddel> legemiddelListe = new IndeksertListe<>(); 
     public IndeksertListe<Lege> legeListe = new IndeksertListe<>(); 
+
+    private Scanner scanner = new Scanner(System.in); 
     
     public void lesFraFil(String filnavn) {
         try {
@@ -142,6 +146,123 @@ public class Legesystem {
         }
     }
 
+    public void meny() {
+        System.out.println("\n**********LEGESYSTEM**********");
+        System.out.println("1: Skrive ut fullstendig oversikt over pasienter, leger, legemidler og resepter");
+        System.out.println("2: Opprette og legge til nye elementer i legesystemet");
+        System.out.println("3: Bruke en gitt resept fra listen til en pasient");
+        System.out.println("4: Skrive ut forskjellige former for statistikk");
+        System.out.println("5: Skrive alle data til fil");
+        System.out.println("0: Avslutt");
+    }
+
+    public void kommandoLokke() {
+        int inputBruker = -1; 
+
+        while (inputBruker != 0) {
+            if (inputBruker == 1) {
+                skrivUt();
+
+            } else if (inputBruker == 2) {
+                System.out.println("Hvilket element vil du legge til (Skriv inn leger, pasient osv?");
+                System.out.println("1: Leger");
+                System.out.println("2: Pasient");
+                System.out.println("3: Legemidler");
+                System.out.println("4: Resept");
+
+                String typeL = scanner.nextLine().toLowerCase(); 
+                List<String> gyldigElement= List.of("leger", "pasient", "legemidler", "resept"); 
+
+                if (gyldigElement.contains(typeL)) {
+                    switch (typeL) {
+                        case "leger":
+                            System.out.println("Hva heter legen?");
+                            String legeNavn = scanner.nextLine(); 
+
+                            System.out.println("Hva er kontrollId?");
+                            int kontrollId = Integer.parseInt(scanner.nextLine()); 
+
+                            leggTilLege(legeNavn, kontrollId);
+                            break;
+
+                        case "pasient":
+                            System.out.println("Hva heter pasienten?");
+                            String pasientNavn = scanner.nextLine(); 
+
+                            System.out.println("Hva er pasienten sitt fødselsnummer?");
+                            String fødselsnummer = scanner.nextLine(); 
+
+                            leggTilPasient(pasientNavn, fødselsnummer);
+                            break;
+
+                        case "legemilder":
+                            System.out.println("Hvilken type legemiddel?");
+                            String type = scanner.nextLine(); 
+
+                            System.out.println("Hva heter legemiddelet?");
+                            String navn = scanner.nextLine(); 
+
+                            System.out.println("Hva koster det?");
+                            int pris = Integer.parseInt(scanner.nextLine()); 
+
+                            System.out.println("Virkestoff?");
+                            int virkestoff = Integer.parseInt(scanner.nextLine()); 
+
+                            System.out.println("Styrke?");
+                            int styrke = Integer.parseInt(scanner.nextLine()); 
+
+                            leggTilLegemiddel(type, navn, pris, virkestoff, styrke);
+                            break;
+
+                        case "resept": 
+                            System.out.println("Hvilken type resept?");
+                            String typeResept = scanner.nextLine(); 
+
+                            System.out.println("Utskrivende lege?");
+                            String utskrivendelegeNavn = scanner.nextLine(); 
+
+                            System.out.println("Navn legemiddel?");
+                            String legeMiddelNavn = scanner.nextLine(); 
+
+                            System.out.println("Pasient ID?");
+                            int pasientID = Integer.parseInt(scanner.nextLine()); 
+
+                            System.out.println("Reit?");
+                            int reit = Integer.parseInt(scanner.nextLine()); 
+                            break;
+                    }
+                }
+
+            } else if (inputBruker == 3) {
+
+                System.out.println("Hvilken pasient vil du se resept for (velg ut fra indeks)?: ");
+                System.out.println(this.pasientListe);
+
+                int indeks = Integer.parseInt(scanner.nextLine()); 
+                System.out.println("Valg paseint: " + pasientListe.hent(indeks));
+
+                brukResept(indeks);
+
+                Pasient pasient = pasientListe.hent(indeks); 
+                
+            } else if (inputBruker == 4) {
+
+                System.out.println("Skriver ut statistikk for antall Vanedannende legemidler: "); 
+                System.out.println("Totalt antall: " + skrivAntallVanedannende()); 
+
+            } else if (inputBruker == 5) {
+
+                System.out.println("Skriver ut pasienter til ønsket fil: "); 
+                System.out.println("Filnavn? ");
+                String filnavn = scanner.nextLine(); 
+                skrivTilFil(filnavn); 
+            }
+
+            meny();
+            inputBruker = Integer.parseInt(scanner.nextLine());
+        }
+    }
+
     public Pasient finnPasientMedId(int Id) { // Egen metode for å finne Pasient med Id
         for (Pasient pasient : pasientListe) {
             if (pasient.Id == Id) {
@@ -254,10 +375,66 @@ public class Legesystem {
                 case "p":
                     lege.skrivPResept(legemiddel, pasient, reit); 
                     break;
+                default: 
+                    throw new IllegalArgumentException("Ugyldig resepttype");
             }
+
 
         } else {
                throw new UlovligUtskrift(lege, legemiddel); 
+        }
+    }
+
+    public void brukResept(int indeks) {
+        Pasient pasient = pasientListe.hent(indeks); 
+
+        System.out.println("Hvilken resept?");
+        if (pasient.hentReseptListe().isEmpty()) {
+            System.out.println("Ingen resepter tilgjengelig for denne pasienten.");
+            
+        } else {
+            int teller = 0;
+            for (Resept resept : pasient.hentReseptListe()) {
+                System.out.println(teller + ": " + resept.hentLegemiddel().hentNavn() + " (" + resept.hentReit() + " reit)");
+                teller++;
+            }
+        }
+
+        int reseptIndeks = Integer.parseInt(scanner.nextLine());
+        Resept resept = pasient.hentReseptListe().get(reseptIndeks); 
+
+        resept.bruk(); 
+    }
+
+    public int skrivAntallVanedannende() {
+        int teller = 0;
+
+        for (Lege lege : legeListe) {
+            for (Resept resept : lege.hentResepterListe()) {
+                if (resept.hentLegemiddel() instanceof Vanedannende) {
+                    teller++;
+                }
+            }
+        }
+
+        return teller; 
+    }
+
+    public void skrivTilFil(String filnavn) {
+        try {
+
+            PrintWriter utskrift = new PrintWriter(filnavn); 
+
+            // Skriver pasienter
+            utskrift.println("# Pasienter (navn, fnr)");
+            for (Pasient pasient : pasientListe) {
+                utskrift.println(pasient.hentNavn() + "," + pasient.hentFødselsnummer());
+            }
+
+            utskrift.close();
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Kunne ikke skrive til fil: " + e);
         }
     }
 }

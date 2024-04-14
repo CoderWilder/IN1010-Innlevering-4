@@ -20,4 +20,16 @@ public class Pasient {
     public String toString() { // Overskriver her toString metoden
         return "Navn: " + navn + "\nFødselsnummer: " + fødselsnummer + "\nPasient Id: " + Id + "\n"; 
     }
+
+    public String hentNavn() {
+        return navn;
+    }
+
+    public String hentFødselsnummer() {
+        return fødselsnummer;
+    }
+
+    public ArrayList<Resept> hentReseptListe() {
+        return resepter;
+    }
 }

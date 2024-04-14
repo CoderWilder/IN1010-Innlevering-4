@@ -13,6 +13,12 @@ public class Lege implements Comparable<Lege> {
         return navn;
     }
 
+    public IndeksertListe<Resept> hentResepterListe() {
+        return utskrevneResepter;
+    }
+
+    
+
     @Override
     public String toString() { // Overskriver her toString metoden
         return "Navn: " + navn + "\n";
@@ -39,6 +45,8 @@ public class Lege implements Comparable<Lege> {
 
         HvitResept nyResept = new HvitResept(legemiddel, this, pasient, reit);
         utskrevneResepter.leggTil((utskrevneResepter.stoerrelse), nyResept); 
+        pasient.hentReseptListe().add(nyResept); 
+        System.out.println("Resept lagt til for pasient " + pasient.hentNavn());
         return nyResept;
     }
 
@@ -49,6 +57,8 @@ public class Lege implements Comparable<Lege> {
 
         MilResept nyResept = new MilResept(legemiddel, this, pasient);
         utskrevneResepter.leggTil((utskrevneResepter.stoerrelse), nyResept); 
+        pasient.hentReseptListe().add(nyResept); 
+        System.out.println("Resept lagt til for pasient " + pasient.hentNavn());
         return nyResept;
     }
 
@@ -59,6 +69,8 @@ public class Lege implements Comparable<Lege> {
 
         PResept nyResept = new PResept(legemiddel, this, pasient, reit);
         utskrevneResepter.leggTil((utskrevneResepter.stoerrelse), nyResept); 
+        pasient.hentReseptListe().add(nyResept); 
+        System.out.println("Resept lagt til for pasient " + pasient.hentNavn());
         return nyResept;
     }
 
@@ -71,6 +83,8 @@ public class Lege implements Comparable<Lege> {
 
         BlaaResept nyResept = new BlaaResept(legemiddel, this, pasient, reit); // Metode for opprettelse av Blaa Resept
         utskrevneResepter.leggTil((utskrevneResepter.stoerrelse), nyResept); 
+        pasient.hentReseptListe().add(nyResept); 
+        System.out.println("Resept lagt til for pasient " + pasient.hentNavn());
         return nyResept;
     }
 }
